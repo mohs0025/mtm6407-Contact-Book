@@ -1,12 +1,12 @@
 <script setup>
-import ContactBook from './views/ContactBook.vue';
+import ContactBook from './views/Home.vue';
 
 </script>
 
 <template>
-  <div id="app">
+  <!-- <div id="app"> -->
     <ContactBook />
-  </div>
+  <!-- </div> -->
 </template>
 
 <style scoped>
