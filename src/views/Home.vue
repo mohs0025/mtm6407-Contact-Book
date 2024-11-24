@@ -91,9 +91,10 @@ function goToAddContact() {
                   :key="contact.id"
                   class="contact-item"
                 >
-                  <div class="contact-name">
+                  <div class="contact-name" @click="$router.push(`/details/${contact.id}`)">
                     <strong>{{ contact.firstName }} {{ contact.lastName }}</strong>
                   </div>
+                  
                   <div class="contact-actions">
                     <button>
                       <i class="fas fa-edit"></i> <!-- Edit Icon -->
@@ -248,7 +249,15 @@ function goToAddContact() {
   /* Hide overflow text */
   text-overflow: ellipsis;
   /* Add ellipsis for overflowed text */
-  line-height: ;
+  /* line-height: ; */
+  cursor: pointer;
+  /* color: #d41356; */
+}
+
+
+.contact-name:hover {
+  /* text-decoration: underline; */
+  color: #d41356;
 }
 
 .button-container {

@@ -1,22 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 import AddContact from '../views/AddContact.vue';
-// import ContactDetails from '../views/ContactDetails.vue';
+import ContactDetails from '../views/ContactDetails.vue';
+
+const routes = [
+  { path: '/', component: Home },
+  { path: '/add', component: AddContact },
+  { path: '/details/:id', component: ContactDetails }, // New route for contact details
+];
 
 const router = createRouter({
-  history: createWebHistory(), //  modern browser history API for clean URLs
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: Home, // The main page showing the contact list
-    },
-    {
-      path: '/add',
-      name: 'add',
-      component: AddContact, // Page for adding a new contact
-    },
-  ],
+  history: createWebHistory(),
+  routes,
 });
 
 export default router;
