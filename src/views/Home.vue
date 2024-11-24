@@ -87,6 +87,27 @@ function handleContactUpdate(updatedContact) {
   }
   closeEditModal();
 }
+
+
+// add delete contact section
+// Function to delete a contact with confirmation
+function deleteContact(contactId) {
+  // Ask for confirmation before deletion
+  const isConfirmed = confirm('Are you sure you want to delete this contact?');
+  if (!isConfirmed) {
+    return; // Exit the function if user cancels
+  }
+
+  // Filter out the contact with the specified ID
+  contacts.value = contacts.value.filter((contact) => contact.id !== contactId);
+
+  // Update local storage
+  localStorage.setItem('contacts', JSON.stringify(contacts.value));
+
+  // Optional: Notify user about successful deletion
+  alert('Contact deleted successfully!');
+}
+
 </script>
 
 
@@ -99,56 +120,50 @@ function handleContactUpdate(updatedContact) {
     <div class="contact-book">
       <!-- Container -->
       <div class="container">
-        <!-- Filter Section -->
-        <div class="filter-section">
-          <label for="filter">Filter by:</label>
-          <select id="filter" v-model="sortCriteria">
-            <option value="lastName">Last Name</option>
-            <option value="firstName">First Name</option>
-          </select>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-          <!-- Buttons Section -->
-          <div class="button-container">
-            <button class="search-button">
-              <i class="fas fa-search"></i> Search Contact
-            </button>
-            <button class="add-button" @click="openAddModal">
-              <i class="fas fa-plus"></i> Add New Contact
-            </button>
+        <!-- Filter and Button Section -->
+        <div class="top-section">
+          <!-- Filter Dropdown -->
+          <div class="filter-section">
+            <label for="filter">Filter by:</label>
+            <select id="filter" v-model="sortCriteria">
+              <option value="lastName">Last Name</option>
+              <option value="firstName">First Name</option>
+            </select>
           </div>
 
-          <!-- Contact List Section -->
-          <div class="contact-list">
-            <div
-              v-for="(contacts, letter) in groupedContacts"
-              :key="letter"
-              class="group"
-            >
-              <!-- Alphabet Circle -->
-              <div class="contact-initial">{{ letter }}</div>
-              <div>
-                <div
-                  v-for="contact in contacts"
-                  :key="contact.id"
-                  class="contact-item"
-                >
-                  <div class="contact-name" @click="openModal(contact)">
-                    <strong>{{ contact.firstName }} {{ contact.lastName }}</strong>
-                  </div>
+          <!-- Add New Contact Button -->
+          <button class="add-button" @click="openAddModal">
+            <i class="fas fa-plus"></i> Add New Contact
+          </button>
+        </div>
 
-                  <!-- Edit and Delete Icons -->
-                  <div class="contact-actions">
-                    <button @click="openEditModal(contact)">
-                      <i class="fas fa-edit"></i>
-                    </button>
-                    <button>
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </div>
+        <!-- Contact List Section -->
+        <div class="contact-list">
+          <div
+            v-for="(contacts, letter) in groupedContacts"
+            :key="letter"
+            class="group"
+          >
+            <!-- Alphabet Circle -->
+            <div class="contact-initial">{{ letter }}</div>
+            <div>
+              <div
+                v-for="contact in contacts"
+                :key="contact.id"
+                class="contact-item"
+              >
+                <div class="contact-name" @click="openModal(contact)">
+                  <strong>{{ contact.firstName }} {{ contact.lastName }}</strong>
+                </div>
 
+                <!-- Edit and Delete Icons -->
+                <div class="contact-actions">
+                  <button @click="openEditModal(contact)">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button @click="deleteContact(contact.id)">
+                    <i class="fas fa-trash"></i> <!-- Delete Icon -->
+                  </button>
                 </div>
               </div>
             </div>
@@ -172,15 +187,17 @@ function handleContactUpdate(updatedContact) {
       @added="handleNewContact"
     />
 
-    <!-- add edit contact modal -->
+    <!-- Edit Contact Modal -->
     <EditContactModal
-  v-if="isEditModalOpen"
-  :contact="selectedContact"
-  @close="closeEditModal"
-  @updated="handleContactUpdate"
-/>
+      v-if="isEditModalOpen"
+      :contact="selectedContact"
+      @close="closeEditModal"
+      @updated="handleContactUpdate"
+    />
   </div>
 </template>
+
+
 
 
 
@@ -207,16 +224,22 @@ function handleContactUpdate(updatedContact) {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+}
+
+.top-section {
+  display: flex;
+  justify-content: space-between; /* Filter on left, button on right */
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .filter-section {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 20px;
 }
 
-.search-button,
 .add-button {
   background-color: #d41356;
   color: #ffffff;
@@ -230,14 +253,6 @@ function handleContactUpdate(updatedContact) {
   gap: 5px;
 }
 
-.button-container {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.search-button:hover,
 .add-button:hover {
   background-color: #333333;
 }
@@ -298,4 +313,5 @@ function handleContactUpdate(updatedContact) {
   color: #d41356;
 }
 </style>
+
 
