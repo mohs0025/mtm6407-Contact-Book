@@ -1,14 +1,12 @@
-<script setup>
-import ContactBook from './views/Home.vue';
-
-</script>
-
 <template>
-  <!-- <div id="app"> -->
-    <ContactBook />
-  <!-- </div> -->
+  <div id="app">
+    <router-view /> <!-- This will render the current route's component -->
+  </div>
 </template>
 
+<script setup>
+</script>
+
 <style scoped>
-/* Optional: Add global styles here */
+/* Optional global styles */
 </style>

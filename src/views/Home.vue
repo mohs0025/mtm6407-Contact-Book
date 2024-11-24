@@ -1,13 +1,17 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
-// Sample list of contacts
-const contacts = ref([
-  { id: 1, firstName: 'Alan', lastName: 'Yarn', email: 'alan.yarn@example.com' },
-  { id: 2, firstName: 'Aha', lastName: 'Home', email: 'aha.home@example.com' },
-  { id: 3, firstName: 'Hassan', lastName: 'Omid', email: 'hassan.omid@example.com' },
-  { id: 4, firstName: 'Sara', lastName: 'Mohsen', email: 'sara.mohsen@example.com' },
-]);
+const router = useRouter(); // Get router instance
+
+// Contacts list fetched from localStorage
+const contacts = ref([]);
+
+// Load contacts from localStorage when the component is mounted
+onMounted(() => {
+  const storedContacts = JSON.parse(localStorage.getItem('contacts')) || [];
+  contacts.value = storedContacts;
+});
 
 // Ref for the sorting criteria (default: by last name)
 const sortCriteria = ref('lastName');
@@ -31,7 +35,13 @@ const groupedContacts = computed(() => {
   });
   return groups;
 });
+
+// Navigate to AddContact view
+function goToAddContact() {
+  router.push('/add'); // Navigate to the /add route
+}
 </script>
+
 
 
 <template>
@@ -57,9 +67,13 @@ const groupedContacts = computed(() => {
             <button class="search-button">
               <i class="fas fa-search"></i> Search Contact
             </button>
-            <button class="add-button">
+            <button class="add-button" @click="goToAddContact">
               <i class="fas fa-plus"></i> Add New Contact
             </button>
+            
+
+            
+
           </div>
 
           <!-- Contact List Section -->
