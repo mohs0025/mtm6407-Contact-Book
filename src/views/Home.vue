@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue';
 import Modal from '../components/Modal.vue'; // Contact Details Modal
 import AddContactModal from '../components/AddContactModal.vue'; // Add Contact Modal
+import EditContactModal from '../components/EditContactModal.vue'; // Import the edit modal
 
 // Contacts list fetched from localStorage
 const contacts = ref([]);
@@ -64,6 +65,28 @@ function handleNewContact(newContact) {
   localStorage.setItem('contacts', JSON.stringify(contacts.value)); // Save updated list to localStorage
   closeAddModal(); // Close the modal
 }
+
+// for edit contact section
+const isEditModalOpen = ref(false); // State for edit modal visibility
+
+function openEditModal(contact) {
+  selectedContact.value = { ...contact }; // Clone the contact to edit
+  isEditModalOpen.value = true;
+}
+
+function closeEditModal() {
+  isEditModalOpen.value = false;
+  selectedContact.value = null;
+}
+
+function handleContactUpdate(updatedContact) {
+  const index = contacts.value.findIndex((c) => c.id === updatedContact.id);
+  if (index !== -1) {
+    contacts.value[index] = updatedContact; // Update the contact in the list
+    localStorage.setItem('contacts', JSON.stringify(contacts.value)); // Save to localStorage
+  }
+  closeEditModal();
+}
 </script>
 
 
@@ -118,13 +141,14 @@ function handleNewContact(newContact) {
 
                   <!-- Edit and Delete Icons -->
                   <div class="contact-actions">
-                    <button>
-                      <i class="fas fa-edit"></i> <!-- Edit Icon -->
+                    <button @click="openEditModal(contact)">
+                      <i class="fas fa-edit"></i>
                     </button>
                     <button>
-                      <i class="fas fa-trash"></i> <!-- Delete Icon -->
+                      <i class="fas fa-trash"></i>
                     </button>
                   </div>
+
                 </div>
               </div>
             </div>
@@ -147,6 +171,14 @@ function handleNewContact(newContact) {
       @close="closeAddModal"
       @added="handleNewContact"
     />
+
+    <!-- add edit contact modal -->
+    <EditContactModal
+  v-if="isEditModalOpen"
+  :contact="selectedContact"
+  @close="closeEditModal"
+  @updated="handleContactUpdate"
+/>
   </div>
 </template>
 

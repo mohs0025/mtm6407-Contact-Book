@@ -67,6 +67,14 @@ function close() {
   z-index: 1000;
 }
 
+.modal-overlay h1 {
+  margin-bottom: 20px;
+  color: #d41356;
+  margin-top: 0;
+  padding-bottom: 20px;
+  font-size: 1.5rem;
+}
+
 .modal-content {
   background-color: #ffffff;
   padding: 20px;
@@ -86,11 +94,12 @@ label {
 }
 
 input {
-  width: 100%;
-  padding: 8px;
+  width: 100%; /* Ensure input uses full width */
+  padding: 8px 20px 8px 8px; /* Add 20px padding to the right, 8px padding to the left */
   margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  box-sizing: border-box; /* Ensure padding doesn't reduce the field size */
 }
 
 button {
