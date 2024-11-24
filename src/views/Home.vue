@@ -1,11 +1,16 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import Modal from '../components/Modal.vue'; // Import the modal component
 import { useRouter } from 'vue-router';
 
 const router = useRouter(); // Get router instance
 
 // Contacts list fetched from localStorage
 const contacts = ref([]);
+
+// Modal state for contact details
+const selectedContact = ref(null); // Currently selected contact
+const isModalOpen = ref(false); // Modal visibility
 
 // Load contacts from localStorage when the component is mounted
 onMounted(() => {
@@ -40,9 +45,19 @@ const groupedContacts = computed(() => {
 function goToAddContact() {
   router.push('/add'); // Navigate to the /add route
 }
+
+// Open the modal with selected contact details
+function openModal(contact) {
+  selectedContact.value = contact;
+  isModalOpen.value = true;
+}
+
+// Close the modal
+function closeModal() {
+  isModalOpen.value = false;
+  selectedContact.value = null;
+}
 </script>
-
-
 
 <template>
   <div>
@@ -70,10 +85,6 @@ function goToAddContact() {
             <button class="add-button" @click="goToAddContact">
               <i class="fas fa-plus"></i> Add New Contact
             </button>
-            
-
-            
-
           </div>
 
           <!-- Contact List Section -->
@@ -91,7 +102,7 @@ function goToAddContact() {
                   :key="contact.id"
                   class="contact-item"
                 >
-                  <div class="contact-name" @click="$router.push(`/details/${contact.id}`)">
+                  <div class="contact-name" @click="openModal(contact)">
                     <strong>{{ contact.firstName }} {{ contact.lastName }}</strong>
                   </div>
                   
@@ -110,12 +121,16 @@ function goToAddContact() {
         </div>
       </div>
     </div>
+
+    <!-- Modal Component -->
+    <Modal v-if="isModalOpen" @close="closeModal">
+      <h1>Contact Details</h1>
+      <p><strong>First Name:</strong> {{ selectedContact.firstName }}</p>
+      <p><strong>Last Name:</strong> {{ selectedContact.lastName }}</p>
+      <p><strong>Email:</strong> {{ selectedContact.email }}</p>
+    </Modal>
   </div>
 </template>
-
-
-
-
 
 <style scoped>
 .contact-book {
@@ -191,8 +206,6 @@ function goToAddContact() {
   /* Optional: Add spacing above the buttons */
 }
 
-/* /non sens txt */
-
 .search-button:hover,
 .add-button:hover {
   background-color: #333333;
@@ -229,8 +242,6 @@ function goToAddContact() {
   border-bottom: 1px solid #838383;
 }
 
-
-
 .contact-actions button {
   background: none;
   border: none;
@@ -249,24 +260,10 @@ function goToAddContact() {
   /* Hide overflow text */
   text-overflow: ellipsis;
   /* Add ellipsis for overflowed text */
-  /* line-height: ; */
   cursor: pointer;
-  /* color: #d41356; */
 }
-
 
 .contact-name:hover {
-  /* text-decoration: underline; */
   color: #d41356;
-}
-
-.button-container {
-  display: flex;
-  justify-content: flex-end;
-  /* Push buttons to the right */
-  gap: 10px;
-  /* Add spacing between the buttons */
-  margin-top: 10px;
-  /* Optional: Add spacing above the buttons */
 }
 </style>
