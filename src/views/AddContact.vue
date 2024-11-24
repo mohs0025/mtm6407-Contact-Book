@@ -25,35 +25,47 @@ function saveContact() {
 </script>
 
 <template>
-  <div class="add-contact">
-    <h1>Add New Contact</h1>
-    <form @submit.prevent="saveContact">
-      <div>
-        <label for="firstName">First Name:</label>
-        <input v-model="firstName" id="firstName" type="text" required />
-      </div>
-      <div>
-        <label for="lastName">Last Name:</label>
-        <input v-model="lastName" id="lastName" type="text" required />
-      </div>
-      <div>
-        <label for="email">Email:</label>
-        <input v-model="email" id="email" type="email" required />
-      </div>
-      <button type="submit">Save</button>
-    </form>
+  <div class="add-contact-page">
+    <div class="add-contact">
+      <h1>Add New Contact</h1>
+      <form @submit.prevent="saveContact">
+        <div>
+          <label for="firstName">First Name:</label>
+          <input v-model="firstName" id="firstName" type="text" required />
+        </div>
+        <div>
+          <label for="lastName">Last Name:</label>
+          <input v-model="lastName" id="lastName" type="text" required />
+        </div>
+        <div>
+          <label for="email">Email:</label>
+          <input v-model="email" id="email" type="email" required />
+        </div>
+        <button type="submit">Save</button>
+      </form>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.add-contact-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Full viewport height */
+  background-color: #242424; /* Same as global background */
+  padding: 20px;
+}
+
 .add-contact {
   max-width: 500px;
-  margin: 0 auto;
-  padding: 20px;
+  width: 100%;
   background: #ffffff;
   border-radius: 10px;
-  /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); */
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+
 
 h1 {
   text-align: center;
@@ -64,6 +76,7 @@ h1 {
 
 form div {
   margin-bottom: 15px;
+  padding-right: 20px;
 }
 
 label {
@@ -93,3 +106,4 @@ button:hover {
   background-color: #a20d43;
 }
 </style>
+
