@@ -206,14 +206,14 @@ function deleteContact(contactId) {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   background-color: #242424;
   color: #ffffff;
 }
 
 .main-title {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 45px;
   color: #ffffff;
 }
 
