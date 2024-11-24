@@ -1,12 +1,3 @@
-<template>
-  <div class="modal-overlay" @click.self="close">
-    <div class="modal-content">
-      <slot></slot> <!-- Slot for custom content -->
-      <button class="close-button" @click="close">Close</button>
-    </div>
-  </div>
-</template>
-
 <script setup>
 const props = defineProps({
   show: {
@@ -21,6 +12,17 @@ function close() {
   emits('close');
 }
 </script>
+
+<template>
+  <div class="modal-overlay" @click.self="close">
+    <div class="modal-content">
+      <slot></slot> <!-- Slot for custom content -->
+      <button class="close-button" @click="close">Close</button>
+    </div>
+  </div>
+</template>
+
+
 
 <style scoped>
 .modal-overlay {

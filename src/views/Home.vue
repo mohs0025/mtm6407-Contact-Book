@@ -1,16 +1,13 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import Modal from '../components/Modal.vue'; // Import the modal component
-import { useRouter } from 'vue-router';
-
-const router = useRouter(); // Get router instance
+import Modal from '../components/Modal.vue'; // Contact Details Modal
+import AddContactModal from '../components/AddContactModal.vue'; // Add Contact Modal
 
 // Contacts list fetched from localStorage
 const contacts = ref([]);
-
-// Modal state for contact details
-const selectedContact = ref(null); // Currently selected contact
-const isModalOpen = ref(false); // Modal visibility
+const selectedContact = ref(null); // Selected contact for details
+const isModalOpen = ref(false); // Contact details modal visibility
+const isAddModalOpen = ref(false); // Add contact modal visibility
 
 // Load contacts from localStorage when the component is mounted
 onMounted(() => {
@@ -41,31 +38,43 @@ const groupedContacts = computed(() => {
   return groups;
 });
 
-// Navigate to AddContact view
-function goToAddContact() {
-  router.push('/add'); // Navigate to the /add route
-}
-
-// Open the modal with selected contact details
+// Open modals
 function openModal(contact) {
   selectedContact.value = contact;
   isModalOpen.value = true;
 }
 
-// Close the modal
+function openAddModal() {
+  isAddModalOpen.value = true;
+}
+
+// Close modals
 function closeModal() {
   isModalOpen.value = false;
   selectedContact.value = null;
 }
+
+function closeAddModal() {
+  isAddModalOpen.value = false;
+}
+
+// Add a new contact to the list
+function handleNewContact(newContact) {
+  contacts.value.push(newContact); // Update the contact list
+  localStorage.setItem('contacts', JSON.stringify(contacts.value)); // Save updated list to localStorage
+  closeAddModal(); // Close the modal
+}
 </script>
+
+
 
 <template>
   <div>
-    <!-- Heading Outside -->
+    <!-- Heading -->
     <h1 class="main-title">Contact Book</h1>
 
     <div class="contact-book">
-      <!-- White Background Container -->
+      <!-- Container -->
       <div class="container">
         <!-- Filter Section -->
         <div class="filter-section">
@@ -76,13 +85,14 @@ function closeModal() {
           </select>
         </div>
 
+        <!-- Main Content -->
         <div class="main-content">
           <!-- Buttons Section -->
           <div class="button-container">
             <button class="search-button">
               <i class="fas fa-search"></i> Search Contact
             </button>
-            <button class="add-button" @click="goToAddContact">
+            <button class="add-button" @click="openAddModal">
               <i class="fas fa-plus"></i> Add New Contact
             </button>
           </div>
@@ -105,7 +115,8 @@ function closeModal() {
                   <div class="contact-name" @click="openModal(contact)">
                     <strong>{{ contact.firstName }} {{ contact.lastName }}</strong>
                   </div>
-                  
+
+                  <!-- Edit and Delete Icons -->
                   <div class="contact-actions">
                     <button>
                       <i class="fas fa-edit"></i> <!-- Edit Icon -->
@@ -122,32 +133,36 @@ function closeModal() {
       </div>
     </div>
 
-    <!-- Modal Component -->
+    <!-- Contact Details Modal -->
     <Modal v-if="isModalOpen" @close="closeModal">
       <h1>Contact Details</h1>
       <p><strong>First Name:</strong> {{ selectedContact.firstName }}</p>
       <p><strong>Last Name:</strong> {{ selectedContact.lastName }}</p>
       <p><strong>Email:</strong> {{ selectedContact.email }}</p>
     </Modal>
+
+    <!-- Add Contact Modal -->
+    <AddContactModal
+      v-if="isAddModalOpen"
+      @close="closeAddModal"
+      @added="handleNewContact"
+    />
   </div>
 </template>
+
+
 
 <style scoped>
 .contact-book {
   display: flex;
   justify-content: center;
-  /* Center the container horizontally */
   align-items: center;
-  /* Center the container vertically */
   min-height: 100vh;
-  /* Full viewport height */
   background-color: #242424;
   color: #ffffff;
 }
 
 .main-title {
-  /* font-size: 2rem; */
-  /* font-weight: bold; */
   text-align: center;
   margin-bottom: 20px;
   color: #ffffff;
@@ -155,14 +170,11 @@ function closeModal() {
 
 .container {
   width: 70vw;
-  /* Set container width */
   background-color: #ffffff;
-  color: #000000;
+  color: #333;
   padding: 20px;
   border-radius: 8px;
-  /* Optional: Add rounded corners */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  /* Optional: Add shadow */
 }
 
 .filter-section {
@@ -170,16 +182,6 @@ function closeModal() {
   align-items: center;
   gap: 10px;
   margin-bottom: 20px;
-}
-
-.filter-section label {
-  margin-right: 0;
-}
-
-.filter-section select {
-  padding: 5px 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
 }
 
 .search-button,
@@ -199,11 +201,8 @@ function closeModal() {
 .button-container {
   display: flex;
   justify-content: flex-end;
-  /* Align buttons to the right */
   gap: 10px;
-  /* Add spacing between the buttons */
   margin-top: 10px;
-  /* Optional: Add spacing above the buttons */
 }
 
 .search-button:hover,
@@ -226,13 +225,12 @@ function closeModal() {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
-  background-color: #242424;
+  background-color: #d41356;
   color: #ffffff;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 18px;
 }
 
 .contact-item {
@@ -242,28 +240,30 @@ function closeModal() {
   border-bottom: 1px solid #838383;
 }
 
-.contact-actions button {
-  background: none;
-  border: none;
-  color: #d41356;
-  cursor: pointer;
-  font-size: 1.2rem; /* Adjust size of icons */
-  margin-left: 8px; /* Add some spacing between icons */
-}
-
 .contact-name {
   width: 500px;
-  /* Set a specific width, e.g., 50% of the parent container */
   white-space: nowrap;
-  /* Prevent text from wrapping */
   overflow: hidden;
-  /* Hide overflow text */
   text-overflow: ellipsis;
-  /* Add ellipsis for overflowed text */
   cursor: pointer;
+  color: #333;
 }
 
 .contact-name:hover {
   color: #d41356;
 }
+
+.contact-actions button {
+  background: none;
+  border: none;
+  color: gray;
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-left: 8px;
+}
+
+.contact-actions button:hover {
+  color: #d41356;
+}
 </style>
+
