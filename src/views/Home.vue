@@ -9,11 +9,27 @@ const contacts = ref([]);
 const selectedContact = ref(null); // Selected contact for details
 const isModalOpen = ref(false); // Contact details modal visibility
 const isAddModalOpen = ref(false); // Add contact modal visibility
+const isEditModalOpen = ref(false); // State for edit modal visibility
+
+// Default example contacts
+const defaultContacts = [
+  { id: 1, firstName: 'Alice', lastName: 'Anderson', email: 'alice.anderson@example.com' },
+  { id: 2, firstName: 'Alan', lastName: 'Archer', email: 'alan.archer@example.com' },
+  { id: 3, firstName: 'Xander', lastName: 'Xenon', email: 'xander.xenon@example.com' },
+  { id: 4, firstName: 'Sophie', lastName: 'Smith', email: 'sophie.smith@example.com' },
+  { id: 5, firstName: 'Sara', lastName: 'Sullivan', email: 'sara.sullivan@example.com' },
+];
 
 // Load contacts from localStorage when the component is mounted
 onMounted(() => {
   const storedContacts = JSON.parse(localStorage.getItem('contacts')) || [];
-  contacts.value = storedContacts;
+  if (storedContacts.length === 0) {
+    // If no contacts exist in local storage, initialize with default contacts
+    localStorage.setItem('contacts', JSON.stringify(defaultContacts));
+    contacts.value = defaultContacts;
+  } else {
+    contacts.value = storedContacts;
+  }
 });
 
 // Ref for the sorting criteria (default: by last name)
@@ -66,9 +82,7 @@ function handleNewContact(newContact) {
   closeAddModal(); // Close the modal
 }
 
-// for edit contact section
-const isEditModalOpen = ref(false); // State for edit modal visibility
-
+// Edit contact functions
 function openEditModal(contact) {
   selectedContact.value = { ...contact }; // Clone the contact to edit
   isEditModalOpen.value = true;
@@ -88,55 +102,17 @@ function handleContactUpdate(updatedContact) {
   closeEditModal();
 }
 
-
-// add delete contact section
-// Function to delete a contact with confirmation
+// Delete contact functions
 function deleteContact(contactId) {
-  // Ask for confirmation before deletion
   const isConfirmed = confirm('Are you sure you want to delete this contact?');
-  if (!isConfirmed) {
-    return; // Exit the function if user cancels
-  }
+  if (!isConfirmed) return;
 
-  // Filter out the contact with the specified ID
   contacts.value = contacts.value.filter((contact) => contact.id !== contactId);
-
-  // Update local storage
   localStorage.setItem('contacts', JSON.stringify(contacts.value));
-
-  // Optional: Notify user about successful deletion
   alert('Contact deleted successfully!');
 }
-
-
-
-// add some static data
-[
-  { "id": 1, "firstName": "Alice", "lastName": "Anderson", "email": "alice.anderson@example.com" },
-  { "id": 2, "firstName": "Alan", "lastName": "Archer", "email": "alan.archer@example.com" },
-  { "id": 3, "firstName": "Xander", "lastName": "Xenon", "email": "xander.xenon@example.com" },
-  { "id": 4, "firstName": "Sophie", "lastName": "Smith", "email": "sophie.smith@example.com" },
-  { "id": 5, "firstName": "Sara", "lastName": "Xia", "email": "sara.sullivan@example.com" }
-]
-onMounted(async () => {
-  const storedContacts = JSON.parse(localStorage.getItem('contacts'));
-
-  if (!storedContacts || storedContacts.length === 0) {
-    // Fetch contacts from server
-    const response = await fetch('https://yourserver.com/default-contacts.json');
-    const defaultContacts = await response.json();
-
-    // Save to localStorage for future use
-    localStorage.setItem('contacts', JSON.stringify(defaultContacts));
-    contacts.value = defaultContacts;
-  } else {
-    contacts.value = storedContacts;
-  }
-});
-
-
-
 </script>
+
 
 
 
