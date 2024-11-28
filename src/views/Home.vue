@@ -96,8 +96,10 @@ function closeEditModal() {
 function handleContactUpdate(updatedContact) {
   const index = contacts.value.findIndex((c) => c.id === updatedContact.id);
   if (index !== -1) {
-    contacts.value[index] = updatedContact; // Update the contact in the list
-    localStorage.setItem('contacts', JSON.stringify(contacts.value)); // Save to localStorage
+    // Update the contact in the list
+    contacts.value[index] = updatedContact; 
+    // Save to localStorage
+    localStorage.setItem('contacts', JSON.stringify(contacts.value)); 
   }
   closeEditModal();
 }
