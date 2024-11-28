@@ -108,6 +108,34 @@ function deleteContact(contactId) {
   alert('Contact deleted successfully!');
 }
 
+
+
+// add some static data
+[
+  { "id": 1, "firstName": "Alice", "lastName": "Anderson", "email": "alice.anderson@example.com" },
+  { "id": 2, "firstName": "Alan", "lastName": "Archer", "email": "alan.archer@example.com" },
+  { "id": 3, "firstName": "Xander", "lastName": "Xenon", "email": "xander.xenon@example.com" },
+  { "id": 4, "firstName": "Sophie", "lastName": "Smith", "email": "sophie.smith@example.com" },
+  { "id": 5, "firstName": "Sara", "lastName": "Xia", "email": "sara.sullivan@example.com" }
+]
+onMounted(async () => {
+  const storedContacts = JSON.parse(localStorage.getItem('contacts'));
+
+  if (!storedContacts || storedContacts.length === 0) {
+    // Fetch contacts from server
+    const response = await fetch('https://yourserver.com/default-contacts.json');
+    const defaultContacts = await response.json();
+
+    // Save to localStorage for future use
+    localStorage.setItem('contacts', JSON.stringify(defaultContacts));
+    contacts.value = defaultContacts;
+  } else {
+    contacts.value = storedContacts;
+  }
+});
+
+
+
 </script>
 
 
@@ -121,7 +149,7 @@ function deleteContact(contactId) {
       <!-- Container -->
       <div class="container">
         <!-- Filter and Button Section -->
-        <div class="top-section">
+        <div class="top-section" style="padding-bottom: 100px;">
           <!-- Filter Dropdown -->
           <div class="filter-section">
             <label for="filter">Filter by:</label>
@@ -146,25 +174,23 @@ function deleteContact(contactId) {
           >
             <!-- Alphabet Circle -->
             <div class="contact-initial">{{ letter }}</div>
-            <div>
-              <div
-                v-for="contact in contacts"
-                :key="contact.id"
-                class="contact-item"
-              >
-                <div class="contact-name" @click="openModal(contact)">
-                  <strong>{{ contact.firstName }} {{ contact.lastName }}</strong>
-                </div>
-
-                <!-- Edit and Delete Icons -->
-                <div class="contact-actions">
-                  <button @click="openEditModal(contact)">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button @click="deleteContact(contact.id)">
-                    <i class="fas fa-trash"></i> <!-- Delete Icon -->
-                  </button>
-                </div>
+            <div
+              v-for="contact in contacts"
+              :key="contact.id"
+              class="contact-item"
+            >
+              <!-- Contact Name -->
+              <div class="contact-name">
+                <strong>{{ contact.firstName }} {{ contact.lastName }}</strong>
+              </div>
+              <!-- Edit and Delete Icons -->
+              <div class="contact-actions">
+                <button @click="openEditModal(contact)">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button @click="deleteContact(contact.id)">
+                  <i class="fas fa-trash"></i>
+                </button>
               </div>
             </div>
           </div>
@@ -201,12 +227,14 @@ function deleteContact(contactId) {
 
 
 
+
+
+
 <style scoped>
 .contact-book {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* min-height: 100vh; */
   background-color: #242424;
   color: #ffffff;
 }
@@ -229,9 +257,11 @@ function deleteContact(contactId) {
 
 .top-section {
   display: flex;
-  justify-content: space-between; /* Filter on left, button on right */
+  flex-wrap: wrap; /* Allow wrapping for responsiveness */
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  gap: 10px;
 }
 
 .filter-section {
@@ -262,42 +292,46 @@ function deleteContact(contactId) {
 }
 
 .group {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .contact-initial {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 25px;
-  height: 25px;
+  width: 40px;
+  height: 40px;
+  font-weight: bold;
+  font-size: 1.2rem;
   border-radius: 50%;
-  background-color: #d41356;
+  background-color: #d41356; /* Background for the circle */
   color: #ffffff;
-  font-size: 18px;
+  margin-bottom: 10px;
 }
 
 .contact-item {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: space-between; /* Align name and icons in one row */
+  align-items: center; /* Vertically align items */
   border-bottom: 1px solid #838383;
+  padding: 10px 0; /* Add spacing for better layout */
 }
 
 .contact-name {
-  width: 500px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
+  flex-grow: 1; /* Allow the name to take remaining space */
+  white-space: nowrap; /* Prevent wrapping of text */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis for long text */
   color: #333;
 }
 
 .contact-name:hover {
   color: #d41356;
+}
+
+.contact-actions {
+  display: flex;
+  gap: 10px;
 }
 
 .contact-actions button {
@@ -306,12 +340,32 @@ function deleteContact(contactId) {
   color: gray;
   cursor: pointer;
   font-size: 1.2rem;
-  margin-left: 8px;
 }
 
 .contact-actions button:hover {
   color: #d41356;
 }
+
+/* Make the layout responsive */
+@media (max-width: 768px) {
+  .contact-item {
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+  }
+
+  .contact-name {
+    margin-bottom: 10px; /* Add spacing when wrapping */
+  }
+
+  .contact-actions {
+    justify-content: flex-end;
+    width: 100%; /* Make actions align properly on wrap */
+  }
+}
 </style>
+
+
+
+
+
 
 
